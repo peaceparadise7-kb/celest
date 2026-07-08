@@ -19,6 +19,7 @@ class DatasetSettings(BaseSettings):
 
     dataset_processed_audio_dir: Path = Path("../datasets/processed/audio_features")
     dataset_processed_metadata_dir: Path = Path("../datasets/processed/metadata_embeddings")
+    dataset_vector_index_dir: Path = Path("../datasets/processed/vector_indices")
 
     dataset_cache_dir: Path = Path("../datasets/cache")
     dataset_exports_dir: Path = Path("../datasets/exports")
