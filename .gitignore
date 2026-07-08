@@ -1,0 +1,33 @@
+# ----------------------------
+# Python
+# ----------------------------
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual Environment
+venv/
+.venv/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# ----------------------------
+# Generated ML artifacts
+# ----------------------------
+datasets/processed/
+
+# ----------------------------
+# Raw audio dataset
+# ----------------------------
+datasets/raw/audio/
+
+# ----------------------------
+# Model cache
+# ----------------------------
+models/
