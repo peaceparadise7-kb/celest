@@ -31,3 +31,8 @@ datasets/raw/audio/
 # Model cache
 # ----------------------------
 models/
+
+# Large FMA metadata (download separately)
+datasets/metadata/features.csv
+datasets/metadata/tracks.csv
+datasets/metadata/raw_tracks.csv
