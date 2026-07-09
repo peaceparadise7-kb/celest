@@ -63,7 +63,12 @@ def execute_extraction_pipeline() -> None:
         audio_path = dataset_config.dataset_raw_audio_dir / relative_path_str
 
         if not audio_path.exists():
-            logger.warning(f"[-] File missing on disk for Track ID {track_id} at: {audio_path}")
+            track["processing_error"] = "Raw audio file not found"
+
+            logger.warning(
+                f"[-] File missing on disk for Track ID {track_id} at: {audio_path}"
+            )
+
             run_summary["failed"] += 1
             continue
 
@@ -92,7 +97,9 @@ def execute_extraction_pipeline() -> None:
                 json.dump(feature_payload, out_file, indent=4, ensure_ascii=False)
 
             # Update track node status in memory
+            track["processed"] = True
             track["features_generated"] = True
+            track.pop("processing_error", None)
             run_summary["processed"] += 1
 
             # Proactive memory cleanup inside long loops
@@ -106,7 +113,13 @@ def execute_extraction_pipeline() -> None:
                 logger.info(f"[*] Extraction progress checkpoint: Extracted features for {run_summary['processed']} tracks.")
 
         except Exception as err:
-            logger.error(f"[!] Critical extraction fault on Track ID {track_id} ({audio_path.name}): {err}")
+            # Record the failure inside the manifest for future debugging
+            track["processing_error"] = str(err)
+
+            logger.error(
+                f"[!] Critical extraction fault on Track ID {track_id} ({audio_path.name}): {err}"
+            )
+
             run_summary["failed"] += 1
             continue
 
@@ -114,7 +127,7 @@ def execute_extraction_pipeline() -> None:
     total_runtime = end_time - start_time
 
     # Commit manifest status modifications to disk if processing occurred
-    if run_summary["processed"] > 0:
+    if run_summary["processed"] > 0 or run_summary["failed"] > 0:
         logger.info("Committing pipeline execution updates back to catalog_manifest.json...")
         try:
             with open(manifest_path, "w", encoding="utf-8") as out_manifest:
